@@ -82,7 +82,7 @@ st.success(f"✅ Model `{model_size}` đã sẵn sàng trên CPU")
 # HÀM NHẬN DIỆN ÂM THANH
 # =========================
 def transcribe_chunk(model, file_path):
-    segments, info = model.transcribe(file_path, language="en", vad_filter=True)
+    segments, info = model.transcribe(file_path, language="vi", vad_filter=True)
     text = "".join([segment.text for segment in segments])
     return text.strip()
 
@@ -114,3 +114,4 @@ if uploaded_file is not None:
         st.error(f"❌ Lỗi khi xử lý âm thanh: {e}")
 
     os.remove(tmp_path)
+
