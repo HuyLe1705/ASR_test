@@ -67,29 +67,19 @@ st.markdown("Tải file âm thanh (.wav, .mp3, .m4a) để chuyển giọng nói
 # =========================
 model_size = st.selectbox("Chọn model:", ["tiny", "base", "small", "medium", "large-v3"], index=2)
 
-# Kiểm tra GPU tự động
-has_cuda = torch.cuda.is_available()
-use_cuda = st.checkbox("Dùng GPU (nếu có)", value=has_cuda)
-
-device = "cuda" if use_cuda and has_cuda else "cpu"
-compute_type = "float16" if device == "cuda" else "int8"
-
 # =========================
-# HÀM TẢI MODEL (CÓ CACHE)
+# HÀM TẢI MODEL (CHỈ DÙNG CPU)
 # =========================
 @st.cache_resource
-def load_model(model_size, device, compute_type):
-    try:
-        return WhisperModel(model_size, device=device, compute_type=compute_type)
-    except Exception as e:
-        st.error(f"⚠️ Không thể tải model trên {device.upper()}. Tự động chuyển sang CPU.")
-        return WhisperModel(model_size, device="cpu", compute_type="int8")
+def load_model(model_size):
+    # Dùng CPU + int8 cho nhẹ
+    return WhisperModel(model_size, device="cpu", compute_type="int8")
 
-model = load_model(model_size, device, compute_type)
-st.success(f"✅ Model `{model_size}` đã sẵn sàng trên {device.upper()} ({compute_type})")
+model = load_model(model_size)
+st.success(f"✅ Model `{model_size}` đã sẵn sàng trên CPU")
 
 # =========================
-# HÀM NHẬN DIỆN
+# HÀM NHẬN DIỆN ÂM THANH
 # =========================
 def transcribe_chunk(model, file_path):
     segments, info = model.transcribe(file_path, language="en", vad_filter=True)
@@ -124,4 +114,3 @@ if uploaded_file is not None:
         st.error(f"❌ Lỗi khi xử lý âm thanh: {e}")
 
     os.remove(tmp_path)
-
