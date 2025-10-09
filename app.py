@@ -55,7 +55,6 @@ import streamlit as st
 import os
 import tempfile
 from faster_whisper import WhisperModel
-import torch
 
 # =========================
 # GIAO DIỆN STREAMLIT
@@ -125,3 +124,4 @@ if uploaded_file is not None:
         st.error(f"❌ Lỗi khi xử lý âm thanh: {e}")
 
     os.remove(tmp_path)
+
